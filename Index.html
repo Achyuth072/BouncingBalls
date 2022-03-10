@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bouncing Balls</title>
+    <!--<script type="text/javascript" src="Index.js"></script>-->
+    <link type="text/css" rel="stylesheet" href="Style.css" />
+   
+</head>
+<body>
+    <canvas></canvas>
+   <script>
+        
+        const canvas = document.querySelector('canvas');       
+        const width = window.innerWidth;
+        const height = window.innerHeight;        
+        canvas.width = width;
+        canvas.height = height;
+
+        
+        const c = canvas.getContext('2d');
+        
+        class Ball {
+            constructor(x, y, velx, vely, size, color) {
+                this.x = x; 
+                this.y = y; 
+                this.velx = velx; 
+                this.vely = vely; 
+                this.size = size; 
+                this.color = color; 
+            }
+
+            drawBall() {
+                c.beginPath(); 
+                c.fillStyle = this.color;
+
+                c.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+                c.fill();
+            }
+
+            
+            updateBall() {
+               
+                if (this.x + this.size >= width || this.x - this.size <= 0) {
+                    this.velx = -this.velx;
+                }
+
+                if (this.y + this.size >= height || this.y - this.size <= 0) {
+                    this.vely = -this.vely;
+                }
+
+                this.x += this.velx;
+                this.y += this.vely;
+            }
+        }
+
+        function random(min, max) {
+            const n = Math.floor(Math.random() * (max - min + 1)) + min;
+            return n;
+        }
+
+        const balls = [];
+
+        while (balls.length < 25) {
+            let size = random(10, 20);
+
+            
+            const ball = new Ball(
+                random(size, width - size),
+                random(size, height - size),
+                random(-11, 11),
+                random(-11, 11),
+                size,
+                `rgb(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)})`
+            );
+
+            balls.push(ball);
+        }
+
+        function loop() {
+            c.fillStyle = 'rgba(0, 0, 0, 0.25)';
+            c.fillRect(0, 0, width, height);
+
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].drawBall();
+                balls[i].updateBall();
+            }
+
+           
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>
